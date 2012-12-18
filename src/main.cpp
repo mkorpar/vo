@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
     glutReshapeFunc(resize);
     glutKeyboardFunc(keyboard);
 
-    objects.push_back(new Object((char*) "cstl.obj", (char*) "abirdschrome.png"));
+    objects.push_back(new Object((char*) "cstl.obj", (char*) "cstl.png"));
     viewpoint = Vec3f(0.0f, 0.0f, -8.0f);
     
     glutMainLoop();

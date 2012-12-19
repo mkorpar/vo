@@ -5,19 +5,9 @@
 #include <GL/glut.h>
 #include <vector>
 
+#include "Vec.hpp"
+
 using namespace std;
-
-template<class T>
-class Vec3 {
-public:
-    T x;
-    T y;
-    T z;
-    Vec3(T x, T y, T z) : x(x), y(y), z(z) {};
-};
-
-typedef Vec3<int> Vec3i;
-typedef Vec3<float> Vec3f;
 
 class Object {
 private:

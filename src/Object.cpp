@@ -3,6 +3,8 @@
 #include <GL/glut.h>
 #include <SOIL/SOIL.h>
 
+#include "Vec.hpp"
+
 #include "Object.hpp"
 
 Object::Object(char* obj, char* tex) {

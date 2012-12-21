@@ -87,8 +87,6 @@ void draw() {
 }
 
 int main(int argc, char* argv[]) {
-
-
     
     glutInit(&argc, argv);
     
@@ -96,12 +94,11 @@ int main(int argc, char* argv[]) {
     glutInitWindowSize(800, 600);
     glutCreateWindow("VO");
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_LIGHTING); 
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_NORMALIZE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
 
     glutDisplayFunc(draw);
     glutReshapeFunc(resize);

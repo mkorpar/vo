@@ -28,8 +28,8 @@ void Terrain::generate() {
     
 	Vec3f* normals2 = (Vec3f*) malloc(width * height * sizeof(Vec3f));
 			
-	for(int z = 0; z <  height; z++) {
-		for(int x = 0; x <  width; x++) {
+	for(int z = 0; z < height; z++) {
+		for(int x = 0; x < width; x++) {
 		
 			Vec3f sum(0.0f, 0.0f, 0.0f);
 			
@@ -96,10 +96,10 @@ void Terrain::draw() {
 		    Vec3f n1 = normals[i * width + j];
   		    Vec3f n2 = normals[(i + 1) * width + j];
   		    
-			glTexCoord2f((float) ((i * 15) % height) / height, (float) ((j * 15) % height) /width);
+			glTexCoord2f((float) ((i * 5) % height) / height, (float) ((j * 5) % width) /width);
 	    	glNormal3f(n1.x, n1.y, n1.z);
 			glVertex3f(j, heights[i * width + j], i);
-			glTexCoord2f((float) (((i + 1) * 15) % height) / height, (float) ((j * 15) % height) /width);
+			glTexCoord2f((float) (((i + 1) * 5) % height) / height, (float) ((j * 5) % width) /width);
 	    	glNormal3f(n2.x, n2.y, n2.z);
 			glVertex3f(j, heights[(i + 1) * width + j], i + 1);
 		}

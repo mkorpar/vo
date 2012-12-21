@@ -21,7 +21,7 @@ Skybox::Skybox() {
 		    SOIL_LOAD_AUTO,
 		    SOIL_CREATE_NEW_ID,
 		    SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-	    );    
+	    ); 
     }
 }
 void Skybox::draw() {
@@ -29,8 +29,8 @@ void Skybox::draw() {
     glColor4f(1, 1, 1, 1);
  
  	glEnable(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Render the front quad
     glBindTexture(GL_TEXTURE_2D, texIds[0]);

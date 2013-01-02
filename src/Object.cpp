@@ -56,13 +56,16 @@ Object::Object(char* obj, char* tex) {
 
 void Object::draw() {
 
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
     glBegin(GL_TRIANGLES);
-
+    glColor4f(1, 1, 1, 1);
+    
     for (int i = 0; i < (int) f.size(); ++i) {
     
         Vec3f v1 = v[f[i].x.x];
@@ -91,4 +94,6 @@ void Object::draw() {
     }
 
     glEnd(); 
+    
+    glPopAttrib();
 }

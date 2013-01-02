@@ -80,6 +80,12 @@ void Player::update() {
             break;
         }
     }
+    
+    position.x = max(bounds.x, position.x);
+    position.x = min(bounds.x + bounds.w, position.x);
+
+    position.z = max(bounds.y, position.z);
+    position.z = min(bounds.y + bounds.h, position.z);
 }
 
 void Player::draw() {

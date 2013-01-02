@@ -32,7 +32,7 @@ void resize(int w, int h) {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (double) w / (double) h, 1, 5000);
+    gluPerspective(45, (double) w / (double) h, 1, 15000);
 }
 
 void mouse(int x, int y) {
@@ -54,7 +54,9 @@ void timer(int value) {
 
 void draw() {
 
+    player->setY(-3 + terrain->getHeight(player->getX() - 1, player->getZ() - 1));
     player->update();
+    skybox->setCenter(player->getPosition());
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -105,12 +107,13 @@ int main(int argc, char* argv[]) {
  
     objects.push_back(new Object((char*) "cstl.obj", (char*) "cstl.png"));
     
-    terrain = new Terrain();
-    terrain->generate();
-    
     skybox = new Skybox();
     
+    terrain = new Terrain(101, 101);
+    terrain->generate();
+    
     player = new Player();
+    player->setBounds(Rectf(-50, -50, 100, 100));
     
     glutMainLoop();
 

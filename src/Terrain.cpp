@@ -10,6 +10,8 @@
 
 Terrain::Terrain() : width(100), height(100), heights(NULL), normals(NULL) {}
 
+Terrain::Terrain(int width, int height) : width(width), height(height), heights(NULL), normals(NULL) {}
+
 void Terrain::generate() {
 
     srand(time(NULL));
@@ -80,6 +82,8 @@ void Terrain::generate() {
 
 void Terrain::draw() {
 
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    
 	glColor3f(0.3f, 0.9f, 0.0f);
 	
 	glEnable(GL_TEXTURE_2D);
@@ -98,12 +102,18 @@ void Terrain::draw() {
   		    
 			glTexCoord2f((float) i / height, (float) j / width);
 	    	glNormal3f(n1.x, n1.y, n1.z);
-			glVertex3f(j, heights[i * width + j], i);
+			glVertex3f(-width / 2 + j, heights[i * width + j], -height / 2 + i);
 			glTexCoord2f((float) (i + 1) / height, (float) j /width);
 	    	glNormal3f(n2.x, n2.y, n2.z);
-			glVertex3f(j, heights[(i + 1) * width + j], i + 1);
+			glVertex3f(-width / 2 + j, heights[(i + 1) * width + j], -height / 2 + i + 1);
 		}
 		
 		glEnd();
 	}
+	
+    glPopAttrib();
+}
+
+float Terrain::getHeight(float x, float y) {
+    return heights[(int) ((y + height / 2 + 1) * width + x + width / 2)];
 }

@@ -19,8 +19,10 @@ private:
     
 public:
     Terrain();
+    Terrain(int width, int height);
     void generate();
     void draw();
+    float getHeight(float x, float y);
 };
 
 #endif // __TERRAIN_HPP__

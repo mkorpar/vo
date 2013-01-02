@@ -96,10 +96,10 @@ void Terrain::draw() {
 		    Vec3f n1 = normals[i * width + j];
   		    Vec3f n2 = normals[(i + 1) * width + j];
   		    
-			glTexCoord2f((float) ((i * 5) % height) / height, (float) ((j * 5) % width) /width);
+			glTexCoord2f((float) i / height, (float) j / width);
 	    	glNormal3f(n1.x, n1.y, n1.z);
 			glVertex3f(j, heights[i * width + j], i);
-			glTexCoord2f((float) (((i + 1) * 5) % height) / height, (float) ((j * 5) % width) /width);
+			glTexCoord2f((float) (i + 1) / height, (float) j /width);
 	    	glNormal3f(n2.x, n2.y, n2.z);
 			glVertex3f(j, heights[(i + 1) * width + j], i + 1);
 		}

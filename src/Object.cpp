@@ -1,4 +1,5 @@
 #include<cstdio>
+#include<cfloat>
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <SOIL/SOIL.h>
@@ -19,12 +20,22 @@ Object::Object(char* obj, char* tex) {
     
     char line[4096];
     
+    float minX = FLT_MAX;
+    float maxX = FLT_MIN;
+    float minZ = FLT_MAX;
+    float maxZ = FLT_MIN;
+    
     while (!feof(file)) {
     
         if (fscanf(file, "%[^\n]\n", line) != 1) break;
         
         if (sscanf(line, "v  %f %f %f", &x, &y, &z) == 3) {
             v.push_back(Vec3f(x, y, z));
+            
+            minX = min(minX, x);
+            maxX = max(maxX, x);
+            minZ = min(minZ, z);
+            maxZ = max(maxZ, z);
         }
         
         if (sscanf(line, "vn %f %f %f", &x, &y, &z) == 3) {
@@ -44,6 +55,12 @@ Object::Object(char* obj, char* tex) {
     }
 
     fclose(file);
+
+    x = (maxX + minX) / 2;
+    z = (maxZ + minZ) / 2;
+    float r = max(max(x - minX, z - minZ), max(maxX - x, maxZ - z));
+    
+    bounds = Circlef(x, z, r + 1.5);
 
     texId = SOIL_load_OGL_texture
 	(

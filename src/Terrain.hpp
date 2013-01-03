@@ -9,20 +9,18 @@
 class Terrain {
 private:
 
-    int width;
-    int height;
+    Recti bounds;
     
     float* heights;
     Vec3f* normals;
     
     GLuint texId;
-    
 public:
-    Terrain();
-    Terrain(int width, int height);
-    void generate();
-    void draw();
+
+    Terrain(Recti bounds, char* texture, char* heightmap);
+    
     float getHeight(float x, float y);
+    void draw();
 };
 
 #endif // __TERRAIN_HPP__

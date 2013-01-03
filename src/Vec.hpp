@@ -46,9 +46,28 @@ public:
     
     Rect() : x(0), y(0), w(0), h(0) {};
     Rect(T x, T y, T w, T h) : x(x), y(y), w(w), h(h) {};
+    
+    bool in(float x_, float y_) { return x <= x_ && x_ < x + w && y <= y_ && y_ < y + h; }
 };
 
 typedef Rect<int> Recti;
 typedef Rect<float> Rectf;
+
+template<class T>
+class Circle {
+public:
+
+    T x;
+    T y;
+    T r;
+    
+    Circle() : x(0), y(0), r(0) {};
+    Circle(T x, T y, T r) : x(x), y(y), r(r) {};
+    
+    bool in(float x_, float y_) { return (x - x_) * (x - x_) + (y - y_) * (y - y_) < r * r; }
+};
+
+typedef Circle<int> Circlei;
+typedef Circle<float> Circlef;
 
 #endif // __VEC_HPP__

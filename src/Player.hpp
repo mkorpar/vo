@@ -2,6 +2,7 @@
 #define __PLAYER_HPP__
 
 #include <set>
+#include <vector>
 
 #include "Vec.hpp"
 
@@ -17,7 +18,9 @@ private:
     set<unsigned char> keysDown;
     
     Rectf bounds;
+    vector<Circlef> restrictions;
     
+    bool isRestricted(float x, float y);
 public:
 
     Player();
@@ -25,13 +28,15 @@ public:
     float getX() { return position.x; }
     float getY() { return position.y; }
     float getZ() { return position.z; }
-    Vec3f getPosition() { return position; } 
     
     void setX(float x) { position.x = x; }
     void setY(float y) { position.y = y; }
     void setZ(float z) { position.z = z; }
     
+    Vec3f getPosition() { return position; } 
+    
     void setBounds(Rectf bounds) { this->bounds = bounds; } 
+    void addRestriction(Circlef restriction) { restrictions.push_back(restriction); }
     
     float getAngleX() { return angle.x; }
     float getAngleY() { return angle.y; }

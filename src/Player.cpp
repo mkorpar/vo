@@ -31,8 +31,8 @@ void Player::handleMouse(int x, int y) {
     
     float dy = y - mouse.y;
     angle.x += dy / 10.0;
-    angle.x = min(angle.x,  30.0f);
-    angle.x = max(angle.x, -30.0f);
+    angle.x = min(angle.x,  45.0f);
+    angle.x = max(angle.x, -45.0f);
     
     if (x < 50 || x > w - 50 || y < 50 || y > h - 50) {
         glutWarpPointer(w / 2, h / 2);
@@ -56,27 +56,50 @@ void Player::update() {
 
     float angle = this->angle.y * PI / 180.0;
     
+    float x;
+    float z; 
+      
     for (std::set<unsigned char>::iterator it = keysDown.begin(); it != keysDown.end(); ++it) {
         switch (*it) {
         case 'w':
         case 'W':
-            position.x -= sin(angle);
-            position.z += cos(angle);
+            x = position.x + sin(angle);
+            z = position.z - cos(angle);
+            
+            if (!isRestricted(x, z)) {
+                position.x = x;
+                position.z = z;
+            }
             break;
         case 's':
         case 'S':
-            position.x += sin(angle);
-            position.z -= cos(angle);
+            x = position.x - sin(angle);
+            z = position.z + cos(angle);
+            
+            if (!isRestricted(x, z)) {
+                position.x = x;
+                position.z = z;
+            }
             break;
         case 'd':
         case 'D':
-            position.x -= sin(angle + PI / 2);
-            position.z += cos(angle + PI / 2);
+            x = position.x + sin(angle + PI / 2);
+            z = position.z - cos(angle + PI / 2);
+            
+            if (!isRestricted(x, z)) {
+                position.x = x;
+                position.z = z;
+            }
             break;
         case 'a':
         case 'A':
-            position.x += sin(angle + PI / 2);
-            position.z -= cos(angle + PI / 2);
+            x = position.x - sin(angle + PI / 2);
+            z = position.z + cos(angle + PI / 2);
+            
+            if (!isRestricted(x, z)) {
+                position.x = x;
+                position.z = z;
+            }
             break;
         }
     }
@@ -133,4 +156,15 @@ void Player::draw() {
     
 	glPopAttrib();
     // OVERLAY END 
+}
+
+bool Player::isRestricted(float x, float y) {
+
+    for (int i = 0; i < (int) restrictions.size(); ++i) {
+        if (restrictions[i].in(x, y)) {
+            return true;
+        }
+    }
+    
+    return false;
 }

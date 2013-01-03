@@ -54,7 +54,7 @@ void timer(int value) {
 
 void draw() {
 
-    player->setY(-3 + terrain->getHeight(player->getX() - 1, player->getZ() - 1));
+    player->setY(terrain->getHeight(player->getX(), player->getZ()) + 2);
     player->update();
     skybox->setCenter(player->getPosition());
     
@@ -66,7 +66,7 @@ void draw() {
     glRotatef(player->getAngleX(), 1, 0, 0);
     glRotatef(player->getAngleY(), 0, 1, 0);
     
-    glTranslatef(player->getX(), player->getY(), player->getZ());
+    glTranslatef(-player->getX(), -player->getY(), -player->getZ());
     
     lights();
     
@@ -108,13 +108,15 @@ int main(int argc, char* argv[]) {
     objects.push_back(new Object((char*) "cstl.obj", (char*) "cstl.png"));
     
     skybox = new Skybox();
-    
-    terrain = new Terrain(101, 101);
-    terrain->generate();
+    terrain = new Terrain(Recti(-50, -50, 101, 101), (char*) "grass.jpg", (char*) "terrain.tga");
     
     player = new Player();
     player->setBounds(Rectf(-50, -50, 100, 100));
     
+    for (int i = 0; i < (int) objects.size(); ++i) {
+        player->addRestriction(objects[i]->getBounds());
+    }
+
     glutMainLoop();
 
     return 0;

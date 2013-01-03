@@ -11,15 +11,22 @@ using namespace std;
 
 class Object {
 private:
+
     vector<Vec3f> v;
     vector<Vec3f> vn;
     vector<Vec3f> vt;
     vector<Vec3<Vec3i> > f;
     
+    Circlef bounds;
+    
     GLuint texId;
 
 public:
+
     Object(char* obj, char* tex);
+    
+    Circlef getBounds() { return bounds; }
+    
     void draw();
 };
 

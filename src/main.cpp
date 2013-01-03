@@ -82,24 +82,6 @@ void draw() {
     glRotatef(player->getAngleY(), 0, 1, 0);
     glTranslatef(-player->getX(), -player->getY(), -player->getZ());
     
-/*
-float a = player->getAngleX() * 3.14159265 / 180.0;
-float b = player->getAngleY() * 3.14159265 / 180.0;
-
-float x = player->getX() - 10 * sin(-b);
-float y = player->getY() + 10 * tan(-a); 
-float z = player->getZ() - 10 * cos(-b);
-
-// glTranslatef(x, y, z);
-// glutSolidSphere(0.25, 20, 16);
-
-glBegin(GL_LINES);
-glColor4f(1.0, 1.0, 1.0, 1.0);
-glVertex3f(player->getX(), 0, player->getZ());
-glVertex3f(x, y, z);
-glEnd();
-printf("%f %f %f | %f %f\n", player->getX(), player->getY(), player->getZ(), player->getAngleX(), player->getAngleY());
-*/
     player->draw();
     
     for (int i = 0; i < (int) objects.size(); ++i) {

@@ -4,10 +4,14 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <set>
+#include <string>
+#include <sstream>
 
 #include "Vec.hpp"
 
 #include "Player.hpp"
+
+using namespace std;
 
 #define PI 3.14159265
 
@@ -211,6 +215,16 @@ void Player::draw() {
     glVertex2f(w / 2 - 6.0, h / 2 + 1.0);
     glEnd();
 
+    stringstream ss;
+    ss << "Score: ";
+    ss << targetHits;
+    string str = ss.str();
+    
+    glRasterPos2f(10, 25);
+    for (int i = 0; i < (int) str.size(); ++i) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, str.at(i));
+    }
+    
     glColor4f(1.0, 1.0, 1.0, 1.0);
     
     glMatrixMode(GL_PROJECTION);

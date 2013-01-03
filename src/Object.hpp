@@ -25,12 +25,16 @@ private:
     vector<Vec3<Vec3i> > f;
     
     Circlef bounds;
+    Vec3f center;
     
     GLuint texId;
 
 public:
 
     SimpleObject(char* obj, char* tex);
+    
+    void translate(float x, float y, float z);
+    Vec3f getCenter() { return center; }
     
     virtual void draw();
     virtual Circlef getBounds() { return bounds; }

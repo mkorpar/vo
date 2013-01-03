@@ -1,6 +1,7 @@
 #ifndef __SKYBOX_HPP__
 #define __SKYBOX_HPP__
 
+#include <cfloat>
 #include <GL/gl.h>
 #include <GL/glut.h>
 
@@ -18,7 +19,7 @@ public:
     void setCenter(Vec3f center) { this->center = center; };
     
     virtual void draw();
-    virtual Circlef getBounds() { return Circlef(0, 0, 0); }
+    virtual Circlef getBounds() { return Circlef(FLT_MIN, FLT_MIN, 0); }
 };
 
 #endif // __SKYBOX_HPP__

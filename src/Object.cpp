@@ -22,6 +22,8 @@ SimpleObject::SimpleObject(char* obj, char* tex) {
     
     float minX = FLT_MAX;
     float maxX = FLT_MIN;
+    float minY = FLT_MAX;
+    float maxY = FLT_MIN;
     float minZ = FLT_MAX;
     float maxZ = FLT_MIN;
     
@@ -34,6 +36,8 @@ SimpleObject::SimpleObject(char* obj, char* tex) {
             
             minX = min(minX, x);
             maxX = max(maxX, x);
+            minY = min(minY, y);
+            maxY = max(maxY, y);
             minZ = min(minZ, z);
             maxZ = max(maxZ, z);
         }
@@ -57,11 +61,13 @@ SimpleObject::SimpleObject(char* obj, char* tex) {
     fclose(file);
 
     x = (maxX + minX) / 2;
+    y = (maxY + minY) / 2;
     z = (maxZ + minZ) / 2;
     float r = max(max(x - minX, z - minZ), max(maxX - x, maxZ - z));
     
     bounds = Circlef(x, z, r + 1.5);
-
+    center = Vec3f(x, y, z);
+    
     texId = SOIL_load_OGL_texture
 	(
 	    tex,
@@ -113,6 +119,22 @@ void SimpleObject::draw() {
     glEnd(); 
     
     glPopAttrib();
+}
+
+void SimpleObject::translate(float x, float y, float z) {
+
+    for (int i = 0; i < (int) v.size(); ++i) {
+        v[i].x += x;
+        v[i].y += y;
+        v[i].z += z;
+    }
+    
+    center.x += x;
+    center.y += y;
+    center.z += z;
+    
+    bounds.x += x;
+    bounds.y += z;
 }
 
 float SimpleObject::intersection(Vec3f p1, Vec3f p2) {

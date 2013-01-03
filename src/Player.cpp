@@ -150,7 +150,7 @@ void Player::update() {
         for (std::set<int>::iterator it = mouseKeysDown.begin(); it != mouseKeysDown.end(); ++it) {
             if (*it == GLUT_LEFT_BUTTON && targetTimeout <= 0) {
             
-                targetTimeout = 0;
+                targetTimeout = 20;
 
                 float t = target->intersection(position, p2);
 
@@ -172,7 +172,7 @@ void Player::update() {
                 
                 if (d == NO_INTERSECTION || d > t) {
                     targetHits++;
-                    printf("bum %d %f\n", targetHits, t);
+                    target = NULL;
                 }
             }
         }

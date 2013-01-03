@@ -69,6 +69,9 @@ public:
     Circle(T x, T y, T r) : x(x), y(y), r(r) {};
     
     bool in(float x_, float y_) { return (x - x_) * (x - x_) + (y - y_) * (y - y_) < r * r; }
+    bool intersects(Circle<T> o) { 
+        return sqrt((x - o.x) * (x - o.x) + (y - o.y) * (y - o.y)) < (r + o.r); 
+    }
 };
 
 typedef Circle<int> Circlei;

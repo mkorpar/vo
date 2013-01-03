@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdio>
 #include <cmath>
+#include <ctime>
 
 #include "Player.hpp"
 #include "Object.hpp"
@@ -59,6 +60,45 @@ void timer(int value) {
 
 void placeTarget() {
 
+    Recti bounds = terrain->getRectBounds();
+    Vec3f center = target->getCenter();
+    
+    Vec3f d;
+    
+    while (true) {
+    
+        d.x = (rand() % bounds.w) + bounds.x;
+        d.z = (rand() % bounds.h) + bounds.y;
+        
+        Vec3f c = center + d;
+
+        if (!bounds.in(c.x, c.z)) {
+            continue;
+        }
+        
+        if (fabs(c.x - player->getX()) < 5 || fabs(c.z - player->getZ()) < 5) {
+            continue;
+        }
+        
+        bool ok = true;
+        for (int i = 0; i < (int) objects.size(); ++i) {
+            if (objects[i] != target && 
+                objects[i]->getBounds().intersects(target->getBounds())) {
+                ok = false;
+                break;
+            }
+        }
+        
+        if (!ok) {
+            continue;
+        }
+        
+        d.y = 1 + terrain->getHeight(c.x, c.z) - center.y;
+        break;
+    }
+    
+    target->translate(d.x, d.y, d.z);
+    player->setTarget(target);
 }
 
 void draw() {
@@ -93,6 +133,8 @@ void draw() {
 
 int main(int argc, char* argv[]) {
     
+    srand(time(NULL));
+
     glutInit(&argc, argv);
     
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -128,8 +170,6 @@ int main(int argc, char* argv[]) {
     objects.push_back(terrain);
     objects.push_back(skybox);
     objects.push_back(target);
-    
-    player->setTarget(target);
     
     for (int i = 0; i < (int) objects.size(); ++i) {
         player->addObject(objects[i]);

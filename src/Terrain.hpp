@@ -1,6 +1,7 @@
 #ifndef __TERRAIN_HPP__
 #define __TERRAIN_HPP__
 
+#include <cfloat>
 #include <GL/gl.h>
 #include <GL/glut.h>
 
@@ -22,9 +23,10 @@ public:
     Terrain(Recti bounds, char* texture, char* heightmap);
     
     float getHeight(float x, float y);
+    Recti getRectBounds() { return bounds; }
     
     virtual void draw();
-    virtual Circlef getBounds() { return Circlef(0, 0, 0); }
+    virtual Circlef getBounds() { return Circlef(FLT_MIN, FLT_MIN, 0); }
     virtual float intersection(Vec3f p1, Vec3f p2);
 };
 

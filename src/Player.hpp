@@ -27,6 +27,7 @@ private:
     Object* target;
     int targetHits;
     int targetTimeout;
+    
 public:
 
     Player();

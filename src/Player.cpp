@@ -1,5 +1,6 @@
-#include<cstdio>
-#include<cmath>
+#include <cfloat>
+#include <cmath>
+#include <cstdio>
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <set>
@@ -137,24 +138,37 @@ void Player::update() {
     targetTimeout--;
     
     if (target != NULL) {
+    
+        Vec3f p2(position.x - bounds.w * sin(-beta), 
+                 position.y + bounds.h * tan(-alpha),
+                 position.z - bounds.h * cos(-beta));
+        
         for (std::set<int>::iterator it = mouseKeysDown.begin(); it != mouseKeysDown.end(); ++it) {
             if (*it == GLUT_LEFT_BUTTON && targetTimeout <= 0) {
             
-                targetTimeout = 2;
+                targetTimeout = 0;
 
-                Vec3f k(- sin(-beta), tan(-alpha), - cos(-beta));
-                k = k.normalize();
+                float t = target->intersection(position, p2);
+
+                if (t == NO_INTERSECTION) continue;
                 
-                bool clear = true;
+                float d = NO_INTERSECTION;
+                
                 for (int i = 0; i < (int) objects.size(); ++i) {
-                    if (objects[i] != target && objects[i]->intersects(position, k)) {
-                        clear = false;
+                    if (objects[i] != target) {
+                    
+                        float d0 = objects[i]->intersection(position, p2);
+                        
+                        if (d == NO_INTERSECTION) d = d0;
+                        else if (d0 != NO_INTERSECTION && d0 < d) d = d0;
+        
+                        if (d < t) break;
                     }
                 }
-            
-                if (clear && target->intersects(position, k)) {
+                
+                if (d == NO_INTERSECTION || d > t) {
                     targetHits++;
-                    printf("bum %d\n", targetHits);
+                    printf("bum %d %f\n", targetHits, t);
                 }
             }
         }

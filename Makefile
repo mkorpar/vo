@@ -1,4 +1,3 @@
-CC = gcc
 CPP = g++
 LD = g++
 
@@ -28,7 +27,7 @@ $(EXC): $(OBJ)
 	@$(LD) $(OBJ) -o $@ $(LD_FLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@echo [CU] $<
+	@echo [CC] $<
 	@mkdir -p $(dir $@)
 	@$(CPP) $< -c -o $@ -MMD $(CPP_FLAGS)
 

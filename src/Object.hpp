@@ -13,7 +13,7 @@ class Object {
 public:
     virtual void draw() = 0;
     virtual Circlef getBounds() = 0;
-    virtual bool intersects(Vec3f p, Vec3f k) { return false; }
+    virtual float intersection(Vec3f p1, Vec3f p2) { return NO_INTERSECTION; }
 };
 
 class SimpleObject : public Object {
@@ -34,7 +34,7 @@ public:
     
     virtual void draw();
     virtual Circlef getBounds() { return bounds; }
-    virtual bool intersects(Vec3f p, Vec3f k);
+    virtual float intersection(Vec3f p1, Vec3f p2);
 };
 
 #endif // __OBJECT_HPP__

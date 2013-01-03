@@ -1,5 +1,5 @@
-#include<cstdio>
-#include<cfloat>
+#include <cfloat>
+#include <cstdio>
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <SOIL/SOIL.h>
@@ -115,49 +115,21 @@ void SimpleObject::draw() {
     glPopAttrib();
 }
 
-bool SimpleObject::intersects(Vec3f p, Vec3f k) {
+float SimpleObject::intersection(Vec3f p1, Vec3f p2) {
 
+    float d = NO_INTERSECTION;
+    
     for (int i = 0; i < (int) f.size(); ++i) {
 
         Vec3f v1 = v[f[i].x.x];
         Vec3f v2 = v[f[i].y.x];
         Vec3f v3 = v[f[i].z.x];
         
-        Vec3f edge1 = v2 - v1;
-        Vec3f edge2 = v3 - v1;
-       
-        // Find the cross product of edge2 and the ray direction
-        Vec3f s1 = k.cross(edge2);
-       
-        // Find the divisor, if its zero, return false as the triangle is
-        // degenerated
-        float divisor = s1.dot(edge1);
-        if (divisor == 0.0) {
-            continue;
-        }
-       
-        // A inverted divisor, as multipling is faster then division
-        float invDivisor = 1.0 / divisor;
+        float d0 = triangleSegmentIntersection(v1, v2, v3, p1, p2);
 
-        // Calculate the first barycentic coordinate. Barycentic coordinates
-        // are between 0.0 and 1.0
-        Vec3f distance = p - v1;
-        float barycCoord_1 = distance.dot(s1) * invDivisor;
-        
-        if (barycCoord_1 < 0.0 || barycCoord_1 > 1.0) {
-            continue;
-        }
-        
-        // Calculate the second barycentic coordinate
-        Vec3f s2 = distance.cross(edge1);
-        float barycCoord_2 = k.dot(s2) * invDivisor;
-        
-        if (barycCoord_2 < 0.0 || (barycCoord_1 + barycCoord_2) > 1.0) {
-            continue;
-        }
-
-        return true;      
+        if (d == NO_INTERSECTION) d = d0;
+        else if (d0 != NO_INTERSECTION && d0 < d) d = d0;
     }
 
-    return false;
+    return d;
 }

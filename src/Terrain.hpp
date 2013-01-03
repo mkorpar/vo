@@ -25,6 +25,7 @@ public:
     
     virtual void draw();
     virtual Circlef getBounds() { return Circlef(0, 0, 0); }
+    virtual float intersection(Vec3f p1, Vec3f p2);
 };
 
 #endif // __TERRAIN_HPP__

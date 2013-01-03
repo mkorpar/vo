@@ -5,6 +5,8 @@
 
 using namespace std;
 
+#define NO_INTERSECTION -1
+
 template<class T>
 class Vec3 {
 public:
@@ -72,4 +74,5 @@ public:
 typedef Circle<int> Circlei;
 typedef Circle<float> Circlef;
 
+extern float triangleSegmentIntersection(Vec3f v1, Vec3f v2, Vec3f v3, Vec3f p1, Vec3f p2);
 #endif // __VEC_HPP__

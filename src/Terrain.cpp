@@ -1,8 +1,8 @@
-#include <cstdlib>
-#include <ctime>
-#include <cstdio>
 #include <cmath>
+#include <cstdlib>
+#include <cstdio>
 #include <cstring>
+#include <ctime>
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <SOIL/SOIL.h>
@@ -120,4 +120,27 @@ void Terrain::draw() {
 
 float Terrain::getHeight(float x, float y) {
     return heights[(int) ((round(y) - bounds.y) * bounds.w + round(x) - bounds.x)];
+}
+
+float Terrain::intersection(Vec3f p1, Vec3f p2) {
+
+    float d = NO_INTERSECTION;
+    
+	for(int i = 0; i < bounds.h - 1; ++i) {
+		for(int j = 0; j < bounds.w - 1; ++j) {
+    		for(int l = 0; l < 2; ++l) {
+
+			    Vec3f v1(bounds.x + j + l, heights[(i + l) * bounds.w + j + l], bounds.y + i + l);
+			    Vec3f v2(bounds.x + j + 1, heights[i * bounds.w + j + 1], bounds.y + i);
+			    Vec3f v3(bounds.x + j, heights[(i + 1) * bounds.w + j], bounds.y + i + 1);
+
+                float d0 = triangleSegmentIntersection(v1, v2, v3, p1, p2);
+                
+                if (d == NO_INTERSECTION) d = d0;
+                else if (d0 != NO_INTERSECTION && d0 < d) d = d0;
+            }    
+		}
+	}
+	
+    return d;
 }

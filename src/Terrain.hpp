@@ -4,9 +4,10 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
+#include "Object.hpp"
 #include "Vec.hpp"
 
-class Terrain {
+class Terrain : public Object {
 private:
 
     Recti bounds;
@@ -15,12 +16,15 @@ private:
     Vec3f* normals;
     
     GLuint texId;
+
 public:
 
     Terrain(Recti bounds, char* texture, char* heightmap);
     
     float getHeight(float x, float y);
-    void draw();
+    
+    virtual void draw();
+    virtual Circlef getBounds() { return Circlef(0, 0, 0); }
 };
 
 #endif // __TERRAIN_HPP__

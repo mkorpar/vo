@@ -10,6 +10,13 @@
 using namespace std;
 
 class Object {
+public:
+    virtual void draw() = 0;
+    virtual Circlef getBounds() = 0;
+    virtual bool intersects(Vec3f p, Vec3f k) { return false; }
+};
+
+class SimpleObject : public Object {
 private:
 
     vector<Vec3f> v;
@@ -23,11 +30,11 @@ private:
 
 public:
 
-    Object(char* obj, char* tex);
+    SimpleObject(char* obj, char* tex);
     
-    Circlef getBounds() { return bounds; }
-    
-    void draw();
+    virtual void draw();
+    virtual Circlef getBounds() { return bounds; }
+    virtual bool intersects(Vec3f p, Vec3f k);
 };
 
 #endif // __OBJECT_HPP__

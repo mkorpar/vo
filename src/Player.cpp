@@ -19,6 +19,10 @@ Player::Player() {
     angle = Vec3f(0, 0, 0);
     
     position = Vec3f(0, 0, 0);
+    
+    target = NULL;
+    targetHits = 0;
+    targetTimeout = 0;
 }
 
 void Player::handleMouse(int x, int y) {
@@ -27,12 +31,19 @@ void Player::handleMouse(int x, int y) {
     int h = glutGet(GLUT_WINDOW_HEIGHT);
     
     float dx = x - mouse.x;
-    angle.y += dx / 5.0;
+    
+    if (abs(dx) < 50) {
+        angle.y += (dx / 5.0);
+        if (angle.y <= -360) angle.y += 360;
+        if (angle.y >=  360) angle.y -= 360;
+    }
     
     float dy = y - mouse.y;
-    angle.x += dy / 10.0;
-    angle.x = min(angle.x,  45.0f);
-    angle.x = max(angle.x, -45.0f);
+    if (abs(dy) < 50) {
+        angle.x += dy / 10.0;
+        angle.x = min(angle.x,  45.0f);
+        angle.x = max(angle.x, -45.0f);
+    }
     
     if (x < 50 || x > w - 50 || y < 50 || y > h - 50) {
         glutWarpPointer(w / 2, h / 2);
@@ -41,6 +52,14 @@ void Player::handleMouse(int x, int y) {
     } else {
         mouse.x = x;
         mouse.y = y;
+    }
+}
+
+void Player::handleMouseClick(int button, int state, int x, int y) {
+    if (state == GLUT_DOWN) {
+        mouseKeysDown.insert(button);
+    } else {
+        mouseKeysDown.erase(button);
     }
 }
 
@@ -54,7 +73,10 @@ void Player::handleKeyUp(unsigned char key, int x, int y) {
 
 void Player::update() {
 
-    float angle = this->angle.y * PI / 180.0;
+    float alpha = this->angle.x * PI / 180.0;
+    float beta = this->angle.y * PI / 180.0;
+    
+    // KEYBOARD
     
     float x;
     float z; 
@@ -63,8 +85,8 @@ void Player::update() {
         switch (*it) {
         case 'w':
         case 'W':
-            x = position.x + sin(angle);
-            z = position.z - cos(angle);
+            x = position.x + sin(beta);
+            z = position.z - cos(beta);
             
             if (!isRestricted(x, z)) {
                 position.x = x;
@@ -73,8 +95,8 @@ void Player::update() {
             break;
         case 's':
         case 'S':
-            x = position.x - sin(angle);
-            z = position.z + cos(angle);
+            x = position.x - sin(beta);
+            z = position.z + cos(beta);
             
             if (!isRestricted(x, z)) {
                 position.x = x;
@@ -83,8 +105,8 @@ void Player::update() {
             break;
         case 'd':
         case 'D':
-            x = position.x + sin(angle + PI / 2);
-            z = position.z - cos(angle + PI / 2);
+            x = position.x + sin(beta + PI / 2);
+            z = position.z - cos(beta + PI / 2);
             
             if (!isRestricted(x, z)) {
                 position.x = x;
@@ -93,8 +115,8 @@ void Player::update() {
             break;
         case 'a':
         case 'A':
-            x = position.x - sin(angle + PI / 2);
-            z = position.z + cos(angle + PI / 2);
+            x = position.x - sin(beta + PI / 2);
+            z = position.z + cos(beta + PI / 2);
             
             if (!isRestricted(x, z)) {
                 position.x = x;
@@ -109,6 +131,35 @@ void Player::update() {
 
     position.z = max(bounds.y, position.z);
     position.z = min(bounds.y + bounds.h, position.z);
+    // KEYBOARD END
+    
+    // MOUSE
+    targetTimeout--;
+    
+    if (target != NULL) {
+        for (std::set<int>::iterator it = mouseKeysDown.begin(); it != mouseKeysDown.end(); ++it) {
+            if (*it == GLUT_LEFT_BUTTON && targetTimeout <= 0) {
+            
+                targetTimeout = 2;
+
+                Vec3f k(- sin(-beta), tan(-alpha), - cos(-beta));
+                k = k.normalize();
+                
+                bool clear = true;
+                for (int i = 0; i < (int) objects.size(); ++i) {
+                    if (objects[i] != target && objects[i]->intersects(position, k)) {
+                        clear = false;
+                    }
+                }
+            
+                if (clear && target->intersects(position, k)) {
+                    targetHits++;
+                    printf("bum %d\n", targetHits);
+                }
+            }
+        }
+    }
+    // MOUSE END
 }
 
 void Player::draw() {
@@ -160,8 +211,8 @@ void Player::draw() {
 
 bool Player::isRestricted(float x, float y) {
 
-    for (int i = 0; i < (int) restrictions.size(); ++i) {
-        if (restrictions[i].in(x, y)) {
+    for (int i = 0; i < (int) objects.size(); ++i) {
+        if (objects[i]->getBounds().in(x, y)) {
             return true;
         }
     }

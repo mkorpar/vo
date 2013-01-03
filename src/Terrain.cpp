@@ -92,8 +92,8 @@ void Terrain::draw() {
 	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texId);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	
 	for(int i = 0; i < bounds.h - 1; ++i) {
 	
@@ -104,10 +104,10 @@ void Terrain::draw() {
 		    Vec3f n1 = normals[i * bounds.w + j];
   		    Vec3f n2 = normals[(i + 1) * bounds.w + j];
   		    
-			glTexCoord2f((float) i / bounds.h, (float) j / bounds.w);
+			glTexCoord2f(i / 12.0f, j / 12.0f);
 	    	glNormal3f(n1.x, n1.y, n1.z);
 			glVertex3f(bounds.x + j, heights[i * bounds.w + j], bounds.y + i);
-			glTexCoord2f((float) (i + 1) / bounds.h, (float) j /bounds.w);
+			glTexCoord2f((i + 1) / 12.0f, j / 12.0f);
 	    	glNormal3f(n2.x, n2.y, n2.z);
 			glVertex3f(bounds.x + j, heights[(i + 1) * bounds.w + j], bounds.y + i + 1);
 		}

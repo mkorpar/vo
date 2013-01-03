@@ -16,6 +16,7 @@ static vector<Object*> objects;
 static Terrain* terrain;
 static Skybox* skybox;
 static Player* player;
+static SimpleObject* target;
 
 void lights() {
 
@@ -39,6 +40,10 @@ void mouse(int x, int y) {
     player->handleMouse(x, y);
 }
 
+void mouseClick(int button, int state, int x, int y) {
+    player->handleMouseClick(button, state, x, y);
+}
+
 void keyDown(unsigned char key, int x, int y) {
     player->handleKeyDown(key, x, y);
 }
@@ -52,8 +57,16 @@ void timer(int value) {
     glutTimerFunc(25, timer, 0);
 }
 
+void placeTarget() {
+
+}
+
 void draw() {
 
+    if (player->getTarget() == NULL) {
+        placeTarget();
+    }
+    
     player->setY(terrain->getHeight(player->getX(), player->getZ()) + 2);
     player->update();
     skybox->setCenter(player->getPosition());
@@ -63,15 +76,30 @@ void draw() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glRotatef(player->getAngleX(), 1, 0, 0);
-    glRotatef(player->getAngleY(), 0, 1, 0);
-    
-    glTranslatef(-player->getX(), -player->getY(), -player->getZ());
-    
     lights();
     
-    terrain->draw();
-    skybox->draw();
+    glRotatef(player->getAngleX(), 1, 0, 0);
+    glRotatef(player->getAngleY(), 0, 1, 0);
+    glTranslatef(-player->getX(), -player->getY(), -player->getZ());
+    
+/*
+float a = player->getAngleX() * 3.14159265 / 180.0;
+float b = player->getAngleY() * 3.14159265 / 180.0;
+
+float x = player->getX() - 10 * sin(-b);
+float y = player->getY() + 10 * tan(-a); 
+float z = player->getZ() - 10 * cos(-b);
+
+// glTranslatef(x, y, z);
+// glutSolidSphere(0.25, 20, 16);
+
+glBegin(GL_LINES);
+glColor4f(1.0, 1.0, 1.0, 1.0);
+glVertex3f(player->getX(), 0, player->getZ());
+glVertex3f(x, y, z);
+glEnd();
+printf("%f %f %f | %f %f\n", player->getX(), player->getY(), player->getZ(), player->getAngleX(), player->getAngleY());
+*/
     player->draw();
     
     for (int i = 0; i < (int) objects.size(); ++i) {
@@ -90,7 +118,7 @@ int main(int argc, char* argv[]) {
     glutCreateWindow("VO");
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_COLOR_MATERIAL);
@@ -101,22 +129,30 @@ int main(int argc, char* argv[]) {
     glutKeyboardUpFunc(keyUp);
     glutMotionFunc(mouse);
     glutPassiveMotionFunc(mouse);
+    glutMouseFunc(mouseClick);
     glutTimerFunc(25, timer, 0);
               
     glutSetCursor(GLUT_CURSOR_NONE); 
  
-    objects.push_back(new Object((char*) "cstl.obj", (char*) "cstl.png"));
-    
     skybox = new Skybox();
-    terrain = new Terrain(Recti(-50, -50, 101, 101), (char*) "grass.jpg", (char*) "terrain.tga");
+    terrain = new Terrain(Recti(-50, -50, 101, 101), (char*) "textures/grass.jpg", 
+        (char*) "textures/terrain.tga");
     
     player = new Player();
     player->setBounds(Rectf(-50, -50, 100, 100));
+        
+    target = new SimpleObject((char*) "cstl.obj", (char*) "textures/cstl.png");
+    
+    objects.push_back(terrain);
+    objects.push_back(skybox);
+    objects.push_back(target);
+    
+    player->setTarget(target);
     
     for (int i = 0; i < (int) objects.size(); ++i) {
-        player->addRestriction(objects[i]->getBounds());
+        player->addObject(objects[i]);
     }
-
+    
     glutMainLoop();
 
     return 0;

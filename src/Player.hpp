@@ -4,6 +4,7 @@
 #include <set>
 #include <vector>
 
+#include "Object.hpp"
 #include "Vec.hpp"
 
 using namespace std;
@@ -16,11 +17,16 @@ private:
     
     Vec3f position;
     set<unsigned char> keysDown;
-    
+    set<int> mouseKeysDown;
+        
     Rectf bounds;
-    vector<Circlef> restrictions;
+    vector<Object*> objects;
     
     bool isRestricted(float x, float y);
+    
+    Object* target;
+    int targetHits;
+    int targetTimeout;
 public:
 
     Player();
@@ -36,12 +42,16 @@ public:
     Vec3f getPosition() { return position; } 
     
     void setBounds(Rectf bounds) { this->bounds = bounds; } 
-    void addRestriction(Circlef restriction) { restrictions.push_back(restriction); }
+    void addObject(Object* object) { objects.push_back(object); }
     
     float getAngleX() { return angle.x; }
     float getAngleY() { return angle.y; }
+
+    Object* getTarget() { return target; }
+    void setTarget(Object* target) { this->target = target; }
     
     void handleMouse(int x, int y);
+    void handleMouseClick(int button, int state, int x, int y);
     void handleKeyDown(unsigned char key, int x, int y);
     void handleKeyUp(unsigned char key, int x, int y);
     

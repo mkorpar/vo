@@ -10,11 +10,11 @@
 Skybox::Skybox() {
 
     char* files[5] = {  
-        (char*) "skybox1.bmp", 
-        (char*) "skybox2.bmp", 
-        (char*) "skybox3.bmp",
-        (char*) "skybox4.bmp", 
-        (char*) "skybox5.bmp"
+        (char*) "textures/skybox1.bmp", 
+        (char*) "textures/skybox2.bmp", 
+        (char*) "textures/skybox3.bmp",
+        (char*) "textures/skybox4.bmp", 
+        (char*) "textures/skybox5.bmp"
     };
     
     for (int i = 0; i < 5; ++i) {
@@ -46,10 +46,10 @@ void Skybox::draw() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f( 2000.0f - center.x, -2000.0f - center.y, -2000.0f - center.z);
-        glTexCoord2f(1, 0); glVertex3f(-2000.0f - center.x, -2000.0f - center.y, -2000.0f - center.z);
-        glTexCoord2f(1, 1); glVertex3f(-2000.0f - center.x,  2000.0f - center.y, -2000.0f - center.z);
-        glTexCoord2f(0, 1); glVertex3f( 2000.0f - center.x,  2000.0f - center.y, -2000.0f - center.z);
+        glTexCoord2f(0, 0); glVertex3f( 2000.0f + center.x, -2000.0f + center.y, -2000.0f + center.z);
+        glTexCoord2f(1, 0); glVertex3f(-2000.0f + center.x, -2000.0f + center.y, -2000.0f + center.z);
+        glTexCoord2f(1, 1); glVertex3f(-2000.0f + center.x,  2000.0f + center.y, -2000.0f + center.z);
+        glTexCoord2f(0, 1); glVertex3f( 2000.0f + center.x,  2000.0f + center.y, -2000.0f + center.z);
     glEnd();
 
     // Render the left quad
@@ -60,10 +60,10 @@ void Skybox::draw() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f( 2000.0f - center.x, -2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(1, 0); glVertex3f( 2000.0f - center.x, -2000.0f - center.y, -2000.0f - center.z);
-        glTexCoord2f(1, 1); glVertex3f( 2000.0f - center.x,  2000.0f - center.y, -2000.0f - center.z);
-        glTexCoord2f(0, 1); glVertex3f( 2000.0f - center.x,  2000.0f - center.y,  2000.0f - center.z);
+        glTexCoord2f(0, 0); glVertex3f( 2000.0f + center.x, -2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(1, 0); glVertex3f( 2000.0f + center.x, -2000.0f + center.y, -2000.0f + center.z);
+        glTexCoord2f(1, 1); glVertex3f( 2000.0f + center.x,  2000.0f + center.y, -2000.0f + center.z);
+        glTexCoord2f(0, 1); glVertex3f( 2000.0f + center.x,  2000.0f + center.y,  2000.0f + center.z);
     glEnd();
  
     // Render the back quad
@@ -74,10 +74,10 @@ void Skybox::draw() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(-2000.0f - center.x, -2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(1, 0); glVertex3f( 2000.0f - center.x, -2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(1, 1); glVertex3f( 2000.0f - center.x,  2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(0, 1); glVertex3f(-2000.0f - center.x,  2000.0f - center.y,  2000.0f - center.z);
+        glTexCoord2f(0, 0); glVertex3f(-2000.0f + center.x, -2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(1, 0); glVertex3f( 2000.0f + center.x, -2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(1, 1); glVertex3f( 2000.0f + center.x,  2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(0, 1); glVertex3f(-2000.0f + center.x,  2000.0f + center.y,  2000.0f + center.z);
  
     glEnd();
 
@@ -89,10 +89,10 @@ void Skybox::draw() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(-2000.0f - center.x, -2000.0f - center.y, -2000.0f - center.z);
-        glTexCoord2f(1, 0); glVertex3f(-2000.0f - center.x, -2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(1, 1); glVertex3f(-2000.0f - center.x,  2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(0, 1); glVertex3f(-2000.0f - center.x,  2000.0f - center.y, -2000.0f - center.z);
+        glTexCoord2f(0, 0); glVertex3f(-2000.0f + center.x, -2000.0f + center.y, -2000.0f + center.z);
+        glTexCoord2f(1, 0); glVertex3f(-2000.0f + center.x, -2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(1, 1); glVertex3f(-2000.0f + center.x,  2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(0, 1); glVertex3f(-2000.0f + center.x,  2000.0f + center.y, -2000.0f + center.z);
     glEnd();
 
     // Render the top quad
@@ -103,10 +103,10 @@ void Skybox::draw() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 1); glVertex3f(-2000.0f - center.x,  2000.0f - center.y, -2000.0f - center.z);
-        glTexCoord2f(0, 0); glVertex3f(-2000.0f - center.x,  2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(1, 0); glVertex3f( 2000.0f - center.x,  2000.0f - center.y,  2000.0f - center.z);
-        glTexCoord2f(1, 1); glVertex3f( 2000.0f - center.x,  2000.0f - center.y, -2000.0f - center.z);
+        glTexCoord2f(0, 1); glVertex3f(-2000.0f + center.x,  2000.0f + center.y, -2000.0f + center.z);
+        glTexCoord2f(0, 0); glVertex3f(-2000.0f + center.x,  2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(1, 0); glVertex3f( 2000.0f + center.x,  2000.0f + center.y,  2000.0f + center.z);
+        glTexCoord2f(1, 1); glVertex3f( 2000.0f + center.x,  2000.0f + center.y, -2000.0f + center.z);
     glEnd();
     
     glPopAttrib();

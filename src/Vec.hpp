@@ -30,6 +30,8 @@ public:
     Vec3 normalize() { float m = magnitude(); return Vec3(x / m, y / m, z / m); }
     float magnitude() { return sqrt(x * x + y * y + z * z); }
     Vec3 cross(const Vec3& o) const { return Vec3(y * o.z - z * o.y, z * o.x - x * o.z, x * o.y - y * o.x); }
+    
+    float dot(const Vec3& o) const { return x * o.x + y * o.y + z * o.z; }
 };
 
 typedef Vec3<int> Vec3i;

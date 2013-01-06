@@ -12,7 +12,7 @@ L_CMD = $(addprefix -L, )
 FLAGS = $(I_CMD) $(L_CMD)
 CC_FLAGS = -O3 -Wall $(FLAGS)
 CPP_FLAGS = -O3 -Wall $(FLAGS)
-LD_FLAGS = -lGL -lGLU -lSOIL -lglut $(FLAGS)
+LD_FLAGS = -lGL -lGLU -lSOIL -lGLEW -lglut $(FLAGS)
 
 SRC = $(shell find $(SRC_DIR) -type f -regex ".*\.cpp")
 OBJ = $(subst $(SRC_DIR), $(OBJ_DIR), $(addsuffix .o, $(basename $(SRC))))

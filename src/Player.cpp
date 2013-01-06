@@ -15,6 +15,8 @@ using namespace std;
 
 #define PI 3.14159265
 
+#define TIMEOUT 0
+
 Player::Player() {
 
     int w = glutGet(GLUT_WINDOW_WIDTH);
@@ -143,14 +145,14 @@ void Player::update() {
     
     if (target != NULL) {
     
-        Vec3f p2(position.x - bounds.w * sin(-beta), 
-                 position.y + bounds.h * tan(-alpha),
-                 position.z - bounds.h * cos(-beta));
+        Vec3f p2(position.x - 1000 * sin(-beta), 
+                 position.y + 1000 * tan(-alpha),
+                 position.z - 1000 * cos(-beta));
         
         for (std::set<int>::iterator it = mouseKeysDown.begin(); it != mouseKeysDown.end(); ++it) {
             if (*it == GLUT_LEFT_BUTTON && targetTimeout <= 0) {
             
-                targetTimeout = 20;
+                targetTimeout = TIMEOUT;
 
                 float t = target->intersection(position, p2);
 

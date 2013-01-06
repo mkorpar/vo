@@ -28,7 +28,7 @@ Terrain::Terrain(Recti bounds, char* texture, char* heightmap) : bounds(bounds) 
 	
 	for (int i = 0; i < height; ++i) {
 	    for (int j = 0; j < width; ++j) {
-	        heights[i * bounds.w + j] = map[i * width + j] / 255.0 * 5.0;
+	        heights[i * bounds.w + j] = map[i * width + j] / 255.0 * 6.0;
 	    }
 	}
 

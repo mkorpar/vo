@@ -1,4 +1,4 @@
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include <GL/glut.h>
 #include <vector>
 #include <cstdio>
@@ -9,11 +9,13 @@
 #include "Object.hpp"
 #include "Skybox.hpp"
 #include "Terrain.hpp"
+#include "Util.hpp"
 #include "Vec.hpp"
 
 using namespace std;
 
 static vector<Object*> objects;
+static vector<Object*> collision;
 static Terrain* terrain;
 static Skybox* skybox;
 static Player* player;
@@ -25,7 +27,7 @@ void lights() {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
     
     GLfloat lightColor0[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    GLfloat lightPos0[] = { 50.0f, 50.0f, 50.0f, 1.0f };
+    GLfloat lightPos0[] = { 200.0f, 50.0f, -200.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 }
@@ -72,18 +74,21 @@ void placeTarget() {
         
         Vec3f c = center + d;
 
-        if (!bounds.in(c.x, c.z)) {
+        if (
+            bounds.x + 5 > c.x || bounds.x + bounds.w - 5 < c.x ||
+            bounds.y + 5 > c.z || bounds.y + bounds.h - 5 < c.z
+        ) {
             continue;
         }
         
-        if (fabs(c.x - player->getX()) < 5 || fabs(c.z - player->getZ()) < 5) {
+        if (fabs(c.x - player->getX()) <= 15 || fabs(c.z - player->getZ()) <= 15) {
             continue;
         }
         
         bool ok = true;
-        for (int i = 0; i < (int) objects.size(); ++i) {
-            if (objects[i] != target && 
-                objects[i]->getBounds().intersects(target->getBounds())) {
+        for (int i = 0; i < (int) collision.size(); ++i) {
+            if (collision[i] != terrain && collision[i] != target &&
+                collision[i]->getBounds().intersects(target->getBounds())) {
                 ok = false;
                 break;
             }
@@ -93,7 +98,7 @@ void placeTarget() {
             continue;
         }
         
-        d.y = 1 + terrain->getHeight(c.x, c.z) - center.y;
+        d.y = 0.9 + terrain->getHeight(c.x, c.z) - center.y;
         break;
     }
     
@@ -110,25 +115,52 @@ void draw() {
     player->setY(terrain->getHeight(player->getX(), player->getZ()) + 2);
     player->update();
     skybox->setCenter(player->getPosition());
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    lights();
-    
     glRotatef(player->getAngleX(), 1, 0, 0);
     glRotatef(player->getAngleY(), 0, 1, 0);
     glTranslatef(-player->getX(), -player->getY(), -player->getZ());
     
     player->draw();
-    
+
     for (int i = 0; i < (int) objects.size(); ++i) {
         objects[i]->draw();
     }
 
+    lights();
     glutSwapBuffers();
+}
+
+void setShaders() {
+
+	GLuint v = glCreateShader(GL_VERTEX_SHADER);
+	GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
+
+	char* vs = textFileRead((char*) "shader.vert");
+	char* fs = textFileRead((char*) "shader.frag");
+
+	const char* ff = fs;
+	const char* vv = vs;
+
+	glShaderSource(v, 1, &vv,NULL);
+	glShaderSource(f, 1, &ff,NULL);
+
+	free(vs);
+	free(fs);
+
+	glCompileShader(v);
+	glCompileShader(f);
+
+	GLuint p = glCreateProgram();
+	glAttachShader(p,f);
+	glAttachShader(p,v);
+
+	glLinkProgram(p);
+	glUseProgram(p);
 }
 
 int main(int argc, char* argv[]) {
@@ -136,7 +168,6 @@ int main(int argc, char* argv[]) {
     srand(time(NULL));
 
     glutInit(&argc, argv);
-    
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(800, 600);
     glutCreateWindow("VO");
@@ -157,24 +188,47 @@ int main(int argc, char* argv[]) {
     glutTimerFunc(25, timer, 0);
               
     glutSetCursor(GLUT_CURSOR_NONE); 
- 
+
     skybox = new Skybox();
     terrain = new Terrain(Recti(-50, -50, 101, 101), (char*) "textures/grass.jpg", 
         (char*) "textures/terrain.tga");
     
     player = new Player();
-    player->setBounds(Rectf(-50, -50, 100, 100));
-        
-    target = new SimpleObject((char*) "cstl.obj", (char*) "textures/cstl.png");
+    player->setBounds(Rectf(-48, -48, 96, 96));
     
+    target = new SimpleObject((char*) "box.obj");
+    target->scale(0.2, 0.2, 0.2);
+    
+    SimpleObject* wall1 = new SimpleObject((char*) "wall.obj");
+    SimpleObject* wall2 = new SimpleObject((char*) "wall.obj");
+    SimpleObject* wall3 = new SimpleObject((char*) "wall.obj");
+    SimpleObject* wall4 = new SimpleObject((char*) "wall.obj");
+    
+    wall1->translate(0, 0, 50);
+    wall2->translate(0, 0, -50);
+    wall3->rotateY(90);
+    wall3->translate(50, 0, 0);
+    wall4->rotateY(90);
+    wall4->translate(-50, 0, 0);
+    
+    objects.push_back(target);
+    objects.push_back(wall1);
+    objects.push_back(wall2);
+    objects.push_back(wall3);
+    objects.push_back(wall4);
     objects.push_back(terrain);
     objects.push_back(skybox);
-    objects.push_back(target);
+
+    collision.push_back(target);
+    collision.push_back(terrain);
     
-    for (int i = 0; i < (int) objects.size(); ++i) {
-        player->addObject(objects[i]);
+    for (int i = 0; i < (int) collision.size(); ++i) {
+        player->addObject(collision[i]);
     }
     
+	glewInit();
+	setShaders();
+	
     glutMainLoop();
 
     return 0;

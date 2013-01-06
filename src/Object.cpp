@@ -287,16 +287,18 @@ float SimpleObject::intersection(Vec3f p1, Vec3f p2) {
         
         vector<Vec3<Vec3i> >& f = it->second;
 
-        for (int i = 0; i < (int) f.size(); ++i) {
+        if (!it->first.transparent) {
+            for (int i = 0; i < (int) f.size(); ++i) {
 
-            Vec3f v1 = v[f[i].x.x];
-            Vec3f v2 = v[f[i].y.x];
-            Vec3f v3 = v[f[i].z.x];
-            
-            float d0 = triangleSegmentIntersection(v1, v2, v3, p1, p2);
+                Vec3f v1 = v[f[i].x.x];
+                Vec3f v2 = v[f[i].y.x];
+                Vec3f v3 = v[f[i].z.x];
+                
+                float d0 = triangleSegmentIntersection(v1, v2, v3, p1, p2);
 
-            if (d == NO_INTERSECTION) d = d0;
-            else if (d0 != NO_INTERSECTION && d0 < d) d = d0;
+                if (d == NO_INTERSECTION) d = d0;
+                else if (d0 != NO_INTERSECTION && d0 < d) d = d0;
+            }
         }
     }
 

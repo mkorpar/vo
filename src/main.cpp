@@ -264,8 +264,7 @@ int main(int argc, char* argv[]) {
         player->addObject(collision[i]);
     }
 
-    // useShaders();
-	
+    useShaders();
     glutMainLoop();
 
     return 0;

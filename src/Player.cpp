@@ -168,7 +168,7 @@ void Player::update() {
                         if (d == NO_INTERSECTION) d = d0;
                         else if (d0 != NO_INTERSECTION && d0 < d) d = d0;
         
-                        if (d < t) break;
+                        if (d != NO_INTERSECTION && d < t) break;
                     }
                 }
                 

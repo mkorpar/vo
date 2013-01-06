@@ -27,7 +27,7 @@ void lights() {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
     
     GLfloat lightColor0[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    GLfloat lightPos0[] = { 200.0f, 50.0f, -200.0f, 1.0f };
+    GLfloat lightPos0[] = { 200.0f, 40.0f, -200.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 }
@@ -53,11 +53,6 @@ void keyDown(unsigned char key, int x, int y) {
 
 void keyUp(unsigned char key, int x, int y) {
     player->handleKeyUp(key, x, y);
-}
-
-void timer(int value) {
-    glutPostRedisplay();
-    glutTimerFunc(25, timer, 0);
 }
 
 void placeTarget() {
@@ -106,7 +101,7 @@ void placeTarget() {
     player->setTarget(target);
 }
 
-void draw() {
+void update() {
 
     if (player->getTarget() == NULL) {
         placeTarget();
@@ -115,27 +110,45 @@ void draw() {
     player->setY(terrain->getHeight(player->getX(), player->getZ()) + 2);
     player->update();
     skybox->setCenter(player->getPosition());
+}
 
+void timer(int value) {
+    glutPostRedisplay();
+    glutTimerFunc(25, timer, 0);
+}
+
+void draw() {
+
+    update();
+    
+    glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    // CAMERA
     glRotatef(player->getAngleX(), 1, 0, 0);
     glRotatef(player->getAngleY(), 0, 1, 0);
     glTranslatef(-player->getX(), -player->getY(), -player->getZ());
     
+    // LIGHTS
+    lights();
+    
+    // 2D
     player->draw();
 
+    // 3D
     for (int i = 0; i < (int) objects.size(); ++i) {
         objects[i]->draw();
     }
 
-    lights();
     glutSwapBuffers();
 }
 
-void setShaders() {
+void useShaders() {
+
+    glewInit();
 
 	GLuint v = glCreateShader(GL_VERTEX_SHADER);
 	GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
@@ -176,7 +189,11 @@ int main(int argc, char* argv[]) {
     glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_NORMALIZE);
-	glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_BLEND);
+
+    glDepthFunc(GL_LEQUAL);	
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glutDisplayFunc(draw);
     glutReshapeFunc(resize);
@@ -199,10 +216,23 @@ int main(int argc, char* argv[]) {
     target = new SimpleObject((char*) "box.obj");
     target->scale(0.2, 0.2, 0.2);
     
+    SimpleObject* tree1 = new SimpleObject((char*) "tree1.obj");
+    tree1->scale(0.03, 0.03, 0.03);
+    tree1->setBounds(Rectf(-1, -1.5, 3.5, 3.5));
+    
+    SimpleObject* tree2 = new SimpleObject(*tree1);
+    SimpleObject* tree3 = new SimpleObject(*tree1);
+    SimpleObject* tree4 = new SimpleObject(*tree1);
+    
+    tree1->translate(-5, terrain->getHeight(-5, -5) - 1, -5);
+    tree2->translate(6, terrain->getHeight(6, 25) - 1, 25);
+    tree3->translate(-15, terrain->getHeight(-15, -25) - 1, -25);
+    tree4->translate(30, terrain->getHeight(30, 10) - 1, 10);
+    
     SimpleObject* wall1 = new SimpleObject((char*) "wall.obj");
-    SimpleObject* wall2 = new SimpleObject((char*) "wall.obj");
-    SimpleObject* wall3 = new SimpleObject((char*) "wall.obj");
-    SimpleObject* wall4 = new SimpleObject((char*) "wall.obj");
+    SimpleObject* wall2 = new SimpleObject(*wall1);
+    SimpleObject* wall3 = new SimpleObject(*wall1);
+    SimpleObject* wall4 = new SimpleObject(*wall1);
     
     wall1->translate(0, 0, 50);
     wall2->translate(0, 0, -50);
@@ -210,7 +240,7 @@ int main(int argc, char* argv[]) {
     wall3->translate(50, 0, 0);
     wall4->rotateY(90);
     wall4->translate(-50, 0, 0);
-    
+
     objects.push_back(target);
     objects.push_back(wall1);
     objects.push_back(wall2);
@@ -218,16 +248,23 @@ int main(int argc, char* argv[]) {
     objects.push_back(wall4);
     objects.push_back(terrain);
     objects.push_back(skybox);
-
+    objects.push_back(tree1);
+    objects.push_back(tree2);
+    objects.push_back(tree3);
+    objects.push_back(tree4);
+    
     collision.push_back(target);
     collision.push_back(terrain);
+    collision.push_back(tree1);
+    collision.push_back(tree2);
+    collision.push_back(tree3);
+    collision.push_back(tree4);
     
     for (int i = 0; i < (int) collision.size(); ++i) {
         player->addObject(collision[i]);
     }
-    
-	glewInit();
-	setShaders();
+
+    // useShaders();
 	
     glutMainLoop();
 

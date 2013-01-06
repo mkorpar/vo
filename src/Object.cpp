@@ -1,8 +1,10 @@
 #include <cfloat>
 #include <cstdio>
+#include <cstring>
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <SOIL/SOIL.h>
+#include <algorithm>
 #include <map>
 #include <vector>
 #include <string>
@@ -12,6 +14,8 @@ using namespace std;
 #include "Vec.hpp"
 
 #include "Object.hpp"
+
+static const Rectf inset(-1.5, -1.5, 3, 3);
 
 SimpleObject::SimpleObject(char* obj) {
 
@@ -34,8 +38,8 @@ SimpleObject::SimpleObject(char* obj) {
     
     char mtl[4096];
     
-    map<string, GLuint> textures;
-    GLuint tex;
+    map<string, Texture> textures;
+    Texture tex;
     
     while (!feof(file)) {
     
@@ -94,11 +98,22 @@ SimpleObject::SimpleObject(char* obj) {
     y = (maxY + minY) / 2;
     z = (maxZ + minZ) / 2;
     
-    bounds = Rectf(minX - 6, minZ - 6, 12 + maxX - minX, 12 + maxZ - minZ);
+    bounds = Rectf(minX + inset.x, minZ + inset.y, maxX - minX + inset.w, maxZ - minZ + inset.h);
     center = Vec3f(x, y, z);
 }
 
-map<string, GLuint> SimpleObject::readMtl(char* path) {
+SimpleObject::SimpleObject(const SimpleObject& other) {
+
+    v = other.v;
+    vn = other.vn;
+    vt = other.vt;
+    fs = other.fs;
+    
+    bounds = other.bounds;
+    center = other.center;
+}
+
+map<string, Texture> SimpleObject::readMtl(char* path) {
 
     FILE* file = fopen(path, "r");
     
@@ -107,7 +122,7 @@ map<string, GLuint> SimpleObject::readMtl(char* path) {
     char n[4096];
     char f[4096];
     
-    map<string, GLuint> textures;
+    map<string, Texture> textures;
 
     while (!feof(file)) {
     
@@ -127,7 +142,7 @@ map<string, GLuint> SimpleObject::readMtl(char* path) {
 		        SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	        );
 	        
-            textures[string(n)] = texId;
+            textures[string(n)] = Texture(texId, strncmp(f + strlen(f) - 3, "tga", 3) == 0);
             
             continue;
         }
@@ -142,15 +157,20 @@ void SimpleObject::draw() {
     
     glColor4f(1, 1, 1, 1);
 
-    for (map<GLuint, vector<Vec3<Vec3i> > >::iterator it = fs.begin(); it != fs.end(); it++) {
+    for (map<Texture, vector<Vec3<Vec3i> > >::iterator it = fs.begin(); it != fs.end(); it++) {
         
         vector<Vec3<Vec3i> >& f = it->second;
 
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, it->first);
+        glBindTexture(GL_TEXTURE_2D, it->first.id);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+        if (it->first.transparent) {
+            glDepthMask(GL_FALSE);
+            glDisable(GL_COLOR_MATERIAL);
+        }
+        
         glBegin(GL_TRIANGLES);
         
         for (int i = 0; i < (int) f.size(); ++i) {
@@ -181,6 +201,11 @@ void SimpleObject::draw() {
         }
 
         glEnd(); 
+        
+        if (it->first.transparent) {
+            glDepthMask(GL_TRUE);
+            glEnable(GL_COLOR_MATERIAL);
+        }
     }
     
     glPopAttrib();
@@ -198,10 +223,10 @@ void SimpleObject::scale(float x, float y, float z) {
     center.y *= y;
     center.z *= z;
     
-    bounds.x *= x;
-    bounds.y *= z;
-    bounds.w *= x;
-    bounds.h *= z;
+    bounds.x = (bounds.x - inset.x) * x + inset.x;
+    bounds.y = (bounds.y - inset.y) * z + inset.y;
+    bounds.w = (bounds.w - inset.w) * x + inset.w;
+    bounds.h = (bounds.h - inset.h) * z + inset.h;
 }
 
 void SimpleObject::translate(float x, float y, float z) {
@@ -258,7 +283,7 @@ float SimpleObject::intersection(Vec3f p1, Vec3f p2) {
 
     float d = NO_INTERSECTION;
 
-    for (map<GLuint, vector<Vec3<Vec3i> > >::iterator it = fs.begin(); it != fs.end(); it++) {
+    for (map<Texture, vector<Vec3<Vec3i> > >::iterator it = fs.begin(); it != fs.end(); it++) {
         
         vector<Vec3<Vec3i> >& f = it->second;
 

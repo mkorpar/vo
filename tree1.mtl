@@ -1,0 +1,48 @@
+# Blender MTL File: 'None'
+# Material Count: 4
+
+newmtl ConiferBark1
+Ns 27.450980
+Ka 0.000000 0.000000 0.000000
+Kd 0.483137 0.445490 0.379608
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/pine.jpg
+map_Ka textures/pine.jpg
+
+newmtl ConiferBranches
+Ns 27.450980
+Ka 0.000000 0.000000 0.000000
+Kd 0.483137 0.445490 0.379608
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/pine.jpg
+map_Ka textures/pine.jpg
+
+newmtl Leaves
+Ns 37.254902
+Ka 0.000000 0.000000 0.000000
+Kd 0.247843 0.473726 0.323137
+Ks 0.090000 0.090000 0.090000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/leaves2.tga
+map_Ka textures/leaves2.tga
+map_d textures/leaves2.tga
+
+newmtl Leaves1
+Ns 7.843137
+Ka 0.000000 0.000000 0.000000
+Kd 0.313726 0.476863 0.417255
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/leaves1.tga
+map_Ka textures/leaves1.tga
+map_d textures/leaves1.tga

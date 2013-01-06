@@ -54,7 +54,7 @@ public:
     bool in(float x_, float y_) { return x <= x_ && x_ < x + w && y <= y_ && y_ < y + h; }
     
     bool intersects(Rect<T> o) { 
-        return !(x < o.x + o.w && x + w > o.x && y < o.y + o.h && y + h > o.y);
+        return false; // !(x < o.x + o.w && x + w > o.x && y < o.y + o.h && y + h > o.y);
     }
 };
 

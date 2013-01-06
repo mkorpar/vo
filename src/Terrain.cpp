@@ -88,7 +88,7 @@ void Terrain::draw() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     
-	glColor3f(0.3f, 0.9f, 0.0f);
+	glColor4f(1, 1, 1, 1);
 	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texId);
@@ -104,10 +104,10 @@ void Terrain::draw() {
 		    Vec3f n1 = normals[i * bounds.w + j];
   		    Vec3f n2 = normals[(i + 1) * bounds.w + j];
   		    
-			glTexCoord2f(i / 12.0f, j / 12.0f);
+			glTexCoord2f(i / 5.0f, j / 5.0f);
 	    	glNormal3f(n1.x, n1.y, n1.z);
 			glVertex3f(bounds.x + j, heights[i * bounds.w + j], bounds.y + i);
-			glTexCoord2f((i + 1) / 12.0f, j / 12.0f);
+			glTexCoord2f((i + 1) / 5.0f, j / 5.0f);
 	    	glNormal3f(n2.x, n2.y, n2.z);
 			glVertex3f(bounds.x + j, heights[(i + 1) * bounds.w + j], bounds.y + i + 1);
 		}

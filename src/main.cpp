@@ -27,7 +27,7 @@ void lights() {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
     
     GLfloat lightColor0[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    GLfloat lightPos0[] = { 200.0f, 40.0f, -200.0f, 1.0f };
+    GLfloat lightPos0[] = { 100.0f, 80.0f, -100.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 }
@@ -264,7 +264,7 @@ int main(int argc, char* argv[]) {
         player->addObject(collision[i]);
     }
 
-    useShaders();
+    // useShaders();
     glutMainLoop();
 
     return 0;

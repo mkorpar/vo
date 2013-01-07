@@ -1,28 +1,26 @@
-#version 420
- 
-in vec4 vpeye; // fragment position in eye coords
-in vec4 vneye; // surface normal in eye coords
- 
-uniform vec4 lightPosition; // light position in eye coords
-uniform vec4 Ka; // ambient coefficient
-uniform vec4 Kd; // diffuse coefficient
-uniform vec4 Ks; // specular coefficient
-uniform float Ns; // specular exponent
-uniform vec4 Ld; // diffuse light colour
- 
-layout (location = 0) out vec4 fragmentColour;
- 
-void main() {
+uniform sampler2D color_texture;
 
-  vec4 n_eye = normalize(vneye); // normalise just to be on the safe side
-  vec4 s_eye = normalize(lightPosition - vpeye); // get direction from surface fragment to light
-  vec4 v_eye = normalize(-vpeye); // get direction from surface fragment to camera
-  vec4 h_eye = normalize(v_eye + s_eye); // Blinn's half-way vector
-  //vec4 r = reflect(-s, vneye); // Phong's full reflection (could use instead of h)
+varying vec3 N;
+varying vec3 v;
+
+void main (void)  
+{  
+   vec3 L = normalize(gl_LightSource[0].position.xyz - v);   
+   vec3 E = normalize(-v); // we are in Eye Coordinates, so EyePos is (0,0,0)  
+   vec3 R = normalize(-reflect(L,N));  
  
-  vec4 Ia = vec4(0.1,0.1,0.1,1) * Ka; // ambient light has a hard-coded colour here, but we could load an La value
-  vec4 Id = Ld * Kd * max(dot(s_eye, n_eye), 0.0); // max() is a safety catch to make sure we never get negative colours
-  vec4 Is = vec4(1,1,1,1) * Ks * pow(max(dot(h_eye, n_eye), 0), Ns); // my ambient light colour is hard coded white, but could load Ls
- 
-  fragmentColour = (Ia + Id + Is);
+   //calculate Ambient Term:  
+   vec4 Iamb = gl_FrontLightProduct[0].ambient;    
+
+   //calculate Diffuse Term:  
+   vec4 Idiff = gl_FrontLightProduct[0].diffuse * max(dot(N,L), 0.0);
+   Idiff = clamp(Idiff, 0.0, 1.0);     
+   
+   // calculate Specular Term:
+   vec4 Ispec = gl_FrontLightProduct[0].specular * pow(max(dot(R,E), 0.0), 0.3 * gl_FrontMaterial.shininess);
+   Ispec = clamp(Ispec, 0.0, 1.0); 
+   
+   // write Total Color:  
+   gl_FragColor = gl_FrontLightModelProduct.sceneColor + Iamb + Idiff + Ispec;     
 }
+
